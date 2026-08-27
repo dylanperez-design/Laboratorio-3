@@ -5,7 +5,7 @@ public class Main
         private String titular;
         private double saldo;;
 
-        public CuentaBancaria(String numeroDeCuenta, String titular, double saldo, ){
+        public CuentaBancaria(String numeroDeCuenta, String titular, double saldo){
             this.numeroDeCuenta=numeroDeCuenta;
             this.titular=titular;
             this.saldo=saldo;
@@ -34,7 +34,7 @@ public class Main
         private double tasaIntereses;
         private double comisionManejo;
 
-        public SensorHumedadSuelo(String numeroDeCuenta, String titular, double saldo,double tasaIntereses, double comisionManejo){
+        public CuentaAhorros(String numeroDeCuenta, String titular, double saldo,double tasaIntereses, double comisionManejo){
             super(numeroDeCuenta,titular,saldo);
             this.tasaIntereses=tasaIntereses;
             this.comisionManejo=comisionManejo;
