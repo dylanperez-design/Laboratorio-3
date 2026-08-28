@@ -3,7 +3,7 @@ public class Main
     public static abstract class CuentaBancaria{
         private String numeroDeCuenta;
         private String titular;
-        private double saldo;;
+        private double saldo;
 
         public CuentaBancaria(String numeroDeCuenta, String titular, double saldo){
             this.numeroDeCuenta=numeroDeCuenta;
@@ -11,7 +11,7 @@ public class Main
             this.saldo=saldo;
         }
        
-        public String getNumeroDC(){return numeroDeCuenta;}
+        public String getNumeroDeCuenta(){return numeroDeCuenta;}
         public String getTitular(){return titular;}   
         public double getSaldo(){return saldo;} 
 
@@ -40,22 +40,39 @@ public class Main
             this.comisionManejo=comisionManejo;
         }
 
-        public double getTasaInter(){return tasaIntereses;}   
-        public double getComisionM(){return comisionManejo;} 
+        public double getTasaIntereses(){return tasaIntereses;}   
+        public double getComisionManejo(){return comisionManejo;} 
 
-        public void setTasaInter(double tasaIntereses){this.tasaIntereses = tasaIntereses;}
-        public void setComisionM(double comisionManejo){this.comisionManejo = comisionManejo;} 
+        public void setTasaIntereses(double tasaIntereses){this.tasaIntereses = tasaIntereses;}
+        public void setComisionManejo(double comisionManejo){this.comisionManejo = comisionManejo;} 
 
         public void aplicarTasaInteres(){
-
+            double interes = getSaldo() * (tasaIntereses/100);
+            setSaldo(getSaldo() + interes);
         }
+
         @Override
         public void retirar(double cantidad){
-        
+            if(cantidad <= 0){
+                System.out.println("El monto debe ser mayor que cero.");
+                return;
+            }
+            if(getSaldo() >= cantidad){
+                setSaldo(getSaldo() - cantidad);
+                System.out.println("Retiro realizado. Nuevo saldo: "+ getSaldo());
+            }else{
+                 System.out.println("No se puede realizar el retiro: saldo insuficiente.");
+            }
         }
+
         @Override
         public void aplicarComisionMensual(){
 
+            if(getSaldo() >= comisionManejo){
+                setSaldo(getSaldo() - comisionManejo);
+            }else{
+                System.out.println("No se pudo cobrar la comision porque el saldo es insuficiente.");
+            }
         }
     }
 
@@ -70,23 +87,31 @@ public class Main
             this.comisionSobregiro=comisionSobregiro;
         }
 
-        public double getCupoSbro(){return cupoSobregiro;}   
-        public double getComisionSobre(){return comisionSobregiro;} 
+        public double getCupoSobregiro(){return cupoSobregiro;}   
+        public double getComisionSobregiro(){return comisionSobregiro;} 
 
-        public void setCupoSobre(double cupoSobregiro){this.cupoSobregiro = cupoSobregiro;}
-        public void setComisionSobre(double comisionSobregiro){this.comisionSobregiro = comisionSobregiro;} 
+        public void setCupoSobregiro(double cupoSobregiro){this.cupoSobregiro = cupoSobregiro;}
+        public void setComisionSobregiro(double comisionSobregiro){this.comisionSobregiro = comisionSobregiro;} 
 
-        
-        
         @Override
         public void retirar(double cantidad){
-        
+            if(cantidad <= 0){
+                    System.out.println("El monto debe ser mayor que cero.");
+                    return;
+                }
+            if(getSaldo() + getCupoSobregiro() >= cantidad){
+                setSaldo(getSaldo() - cantidad);
+                System.out.println("Retiro realizado. Nuevo saldo: "+ getSaldo());
+            }else{
+                System.out.println("No se puede realizar el retiro: cupo de sobregiro exedida.");
+            }
         }
         @Override
         public void aplicarComisionMensual(){
-
-        }
-       
+            if(getSaldo() < 0){
+                setSaldo(getSaldo() - getComisionSobregiro());
+            }
+        }   
     }
 
     public static void main(String[] args) {
