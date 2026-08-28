@@ -1,3 +1,6 @@
+import java.io.BufferedWriter; 
+import java.io.FileWriter; 
+import java.io.IOException;
 public class Main
 { 
     public static abstract class CuentaBancaria{
@@ -114,7 +117,64 @@ public class Main
         }   
     }
 
+    public class RegistroAuditoriaBancaria(){
+        implements AutoCloseable{
+            private BufferedWriter archivo;
+
+            public RegistroAuditoriaBancaria(String nombreArchivo) throws IOException{
+                archivo = new BufferedWriter(new FileWriter(nombreArchivo, true));
+            }
+
+            public void registrar(String mensaje) throws IOException{
+                archivo.write(mensaje);
+                archivo.newLine();
+            }
+
+            public void close() throws IOException {
+                archivo.close();
+                System.out.println("Registro de auditoria cerrado.");
+            }
+        }
+    }    
+
     public static void main(String[] args) {
-        	
+    CuentaBancaria cuentaAhorros = new CuentaAhorros("001", "Jose", 1000, 2.2, 10);
+    CuentaBancaria cuentaCorriente = new CuentaAhorros("002", "Olga", 500, 500, 10);
+
+
+        System.out.println("=== CUENTA DE AHORROS ===");
+        cuentaAhorros.retirar(200);
+        cuentaAhorros.aplicarComisionMensual();
+        System.out.println("Saldo: " + cuentaAhorros.getSaldo());
+
+
+        System.out.println("\n=== CUENTA CORRIENTE ===");
+        cuentaCorriente.retirar(800);
+        cuentaCorriente.aplicarComisionMensual();
+        System.out.println("Saldo: "+ cuentaCorriente.getSaldo());
+
+        try (RegistroAuditoriaBancaria registro =new RegistroAuditoriaBancaria("auditoria.txt")) {
+
+            registro.registrar(
+                "Se realizaron operaciones bancarias."
+            );
+
+            registro.registrar(
+                "Saldo cuenta ahorros: "
+                + cuentaAhorros.getSaldo()
+            );
+
+            registro.registrar(
+                "Saldo cuenta corriente: "
+                + cuentaCorriente.getSaldo()
+            );
+
+        } catch (IOException e) {
+
+            System.out.println(
+                "Error en el registro de auditoria: "
+                + e.getMessage()
+            );
+        }
     }
 }
